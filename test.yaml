@@ -1,0 +1,7 @@
+message:
+  topic: announcements1
+  title: Hello
+  body: Happy Looter Day!
+  recipients:
+    - kiran0130@test.com
+    - dave.yu+test1@lootcrate.com
