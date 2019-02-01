@@ -1,3 +1,8 @@
+### HOW TO RUN THIS SCRIPT
+#
+#  $ aws-vault exec lootcrate-dev-admin -- chamber exec loot-crate-ios -- bundle exec ruby push.rb ./test.yaml
+#
+
 require 'rubygems'
 require 'bundler/setup'
 
@@ -13,7 +18,7 @@ require './env.rb'
 
 logger = SemanticLogger['LootPush']
 SemanticLogger.add_appender(io: $stdout, formatter: :color, level: :debug)
-DB = Sequel.connect(LOOTCRATE_DATABASE_URL, logger: logger)
+DB = Sequel.connect(LOOTCRATE_DATABASE_URL) # , logger: logger)
 FirebaseCloudMessenger.project_id = FIREBASE_PROJECT_ID
 
 ###################################################
@@ -37,8 +42,11 @@ logger.info("Email address count: #{message_recipients.count}")
 ##  2. Lookup firebase registration keys for             ##
 ##  each email address and subscribe them to the topic   ##
 ###########################################################
-devices = DB[:devices].join(:users, id: :user_id).where(email: message_recipients, status: 0).select(:firebase_registration_token)
-tokens = devices.map(:firebase_registration_token).uniq
+tokens = []
+message_recipients.each_slice(1000) do |emails|
+  devices = DB[:devices].join(:users, id: :user_id).where(email: emails, status: 0).select(:firebase_registration_token)
+  tokens.push(*devices.map(:firebase_registration_token).uniq)
+end
 logger.info("Found matching #{tokens.count} registered devices with notifications enabled")
 
 ## Batch add the devices to the topic
