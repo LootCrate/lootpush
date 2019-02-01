@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.6.0'
+ruby '2.5.1'
 
 gem 'firebase_cloud_messenger'
 gem 'http'

@@ -1,6 +1,6 @@
 ### HOW TO RUN THIS SCRIPT
 #
-#  $ aws-vault exec lootcrate-dev-admin -- chamber exec loot-crate-ios -- bundle exec ruby push.rb ./test.yaml
+#  $ aws-vault exec lootcrate-prod-admin -- chamber exec loot-crate-ios -- bundle exec ruby push.rb test.yaml
 #
 
 require 'rubygems'
